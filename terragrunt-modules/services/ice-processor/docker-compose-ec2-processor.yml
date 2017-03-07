@@ -1,0 +1,9 @@
+ice:
+  image: jimroth/ice:latest
+  command: | 
+    -Djava.net.preferIPv4Stack=true
+    -Djava.net.preferIPv4Addresses
+    -Duser.timezone=UTC
+    run-app
+  volumes:
+    - ./ice/assets/ice.properties:/opt/ice/src/java/ice.properties

@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# /etc/init.d/ice
+# Subsystem file for "ICE" server
+#
+# chkconfig: 2345 95 05
+# description: ice server daemon
+#
+# processname: ice
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+RETVAL=0
+prog="ICE"
+docker_compose="/usr/local/bin/docker-compose"
+lock_file="/var/lock/subsys/$prog"
+config_file="/opt/docker-ice/docker-compose.yml"
+
+start() {
+    echo -n $"Starting $prog:"
+    exec $docker_compose -f $config_file up -d
+    RETVAL=$?
+    [ "$RETVAL" = 0 ] && touch $lock_file
+    echo
+}
+
+stop() {
+    echo -n $"Stopping $prog:"
+    exec $docker_compose -f $config_file stop
+    RETVAL=$?
+    [ "$RETVAL" = 0 ] && rm -f  $lock_file
+    echo
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    condrestart)
+        if [ -f $lock_file ] ; then
+            stop
+            # avoid race
+            sleep 3
+            start
+        fi
+        ;;
+    status)
+        exec $docker_compose -f $config_file ps
+        RETVAL=$?
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|restart|condrestart|status}"
+        RETVAL=1
+esac
+exit $RETVAL

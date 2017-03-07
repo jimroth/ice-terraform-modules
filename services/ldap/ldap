@@ -1,0 +1,42 @@
+#!/bin/sh
+#
+# /etc/init.d/ldap
+# Subsystem file for ldap server
+#
+# chkconfig: 2345 95 05
+# description: ldap server daemon
+#
+# processname: ldap
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+RETVAL=0
+prog="LDAP"
+apacheds="/opt/ldap/apacheds/bin/apacheds.sh"
+
+JAVA_HOME=/usr/lib/jvm/jre
+export JAVA_HOME
+
+start() {
+    echo -n $"Starting $prog: "
+    exec /bin/bash $apacheds start
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    exec /bin/bash $apacheds stop
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop}"
+        RETVAL=1
+esac
+exit $RETVAL
