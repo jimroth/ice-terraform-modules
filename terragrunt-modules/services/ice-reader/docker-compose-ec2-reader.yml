@@ -7,6 +7,10 @@ ice:
     run-app
   volumes:
     - ./ice/assets/ice.properties:/opt/ice/src/java/ice.properties
+  log_driver: "json-file"
+  log_opt:
+    max-size: "10m"
+    max-file: "3"
 nginx-ldap:
   image: jimroth/nginx-ldap:latest
   command: nginx -g "daemon off;"
@@ -19,3 +23,7 @@ nginx-ldap:
     - "443:443"
   links:
     - ice:ice
+  log_driver: "json-file"
+  log_opt:
+    max-size: "10m"
+    max-file: "3"
