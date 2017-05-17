@@ -70,5 +70,5 @@ EOF
 
 resource "aws_iam_instance_profile" "ice_reader_profile" {
   name  = "${var.service_name}-profile"
-  roles = ["${aws_iam_role.ice_reader_role.name}"]
+  role = "${aws_iam_role.ice_reader_role.name}"
 }

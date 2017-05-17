@@ -1,34 +1,6 @@
-resource "aws_iam_role_policy" "ice_bucket_full_access_policy" {
-  name = "ice-bucket-full-access-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:ListBucket",
-                "s3:GetBucketLocation"
-            ],
-            "Resource": "arn:aws:s3:::${var.work_bucket}"
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:*"
-            ],
-            "Resource": "arn:aws:s3:::${var.work_bucket}/*"
-        }
-    ]
-}
-EOF
-}
-
-resource "aws_iam_role_policy" "dbr_read_access_policy" {
-  name = "dbr-read-access-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
+resource "aws_iam_role_policy" "dbr_full_access_policy" {
+  name = "dbr-full-access-policy"
+  role = "${aws_iam_role.dbr_splitter_role.id}"
 
   policy = <<EOF
 {
@@ -45,8 +17,7 @@ resource "aws_iam_role_policy" "dbr_read_access_policy" {
         {
             "Effect": "Allow",
             "Action": [
-                "s3:GetObject",
-                "s3:GetObjectAcl"
+                "s3:*"
             ],
             "Resource": "arn:aws:s3:::${var.dbr_bucket}/*"
         }
@@ -55,9 +26,38 @@ resource "aws_iam_role_policy" "dbr_read_access_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy" "assume_ice_role_policy" {
-  name = "assume-ice-role-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
+resource "aws_iam_role_policy" "cost_and_usage_read_access_policy" {
+  name = "cost-and_usage-read-access-policy"
+  role = "${aws_iam_role.dbr_splitter_role.id}"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": "arn:aws:s3:::${var.cost_and_usage_bucket}"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:GetObjectAcl"
+            ],
+            "Resource": "arn:aws:s3:::${var.cost_and_usage_bucket}/*"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "assume_role_policy" {
+  name = "assume-role-policy"
+  role = "${aws_iam_role.dbr_splitter_role.id}"
 
   policy = <<EOF
 {
@@ -68,7 +68,7 @@ resource "aws_iam_role_policy" "assume_ice_role_policy" {
             "Action": [
                 "sts:AssumeRole"
             ],
-            "Resource": "arn:aws:iam::*:role/ice"
+            "Resource": ${jsonencode(var.assume_role_resources)}
         }
     ]
 }
@@ -77,7 +77,7 @@ EOF
 
 resource "aws_iam_role_policy" "cloudwatch_metrics_push_policy" {
   name = "cloudwatch-metrics-push-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
+  role = "${aws_iam_role.dbr_splitter_role.id}"
 
   policy = <<EOF
 {
@@ -98,12 +98,37 @@ resource "aws_iam_role_policy" "cloudwatch_metrics_push_policy" {
 EOF
 }
 
+resource "aws_iam_role_policy" "cloudwatch_logs_policy" {
+  name = "cloudwatch-logs-policy"
+  role = "${aws_iam_role.dbr_splitter_role.id}"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams"
+            ],
+            "Resource": [
+                "arn:aws:logs:*:*:*"
+            ]
+        }
+    ]
+}
+EOF
+}
+
 #
 # Allow all Describe* calls plus ability to stop our instance
 #
 resource "aws_iam_role_policy" "ec2_policy" {
   name = "ec2-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
+  role = "${aws_iam_role.dbr_splitter_role.id}"
 
   policy = <<EOF
 {
@@ -122,7 +147,7 @@ resource "aws_iam_role_policy" "ec2_policy" {
 EOF
 }
 
-resource "aws_iam_role" "ice_processor_role" {
+resource "aws_iam_role" "dbr_splitter_role" {
   name = "${var.service_name}-role"
 
   assume_role_policy = <<EOF
@@ -141,7 +166,7 @@ resource "aws_iam_role" "ice_processor_role" {
 EOF
 }
 
-resource "aws_iam_instance_profile" "ice_processor_profile" {
+resource "aws_iam_instance_profile" "dbr_splitter_profile" {
   name  = "${var.service_name}-profile"
-  role = "${aws_iam_role.ice_processor_role.name}"
+  role = "${aws_iam_role.dbr_splitter_role.name}"
 }
