@@ -26,7 +26,9 @@ variable "instance_type" {
   default = "t2.small"
 }
 
-variable "ssl_creds_dir" {}
+variable "ssl_creds_dir" {
+  description = "Path to folder containing SSL certificate and key files. Files must be named ice.crt and ice.key"
+}
 
 variable "ldap_port" {
   default = "10389"
