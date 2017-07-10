@@ -146,12 +146,12 @@ resource "aws_instance" "ice_reader" {
 
   provisioner "file" {
     source      = "${var.ssl_creds_dir}/ice.crt"
-    destination = "/tmp/ssl"
+    destination = "/tmp/ice.crt"
   }
 
   provisioner "file" {
     source      = "${var.ssl_creds_dir}/ice.key"
-    destination = "/tmp/ssl"
+    destination = "/tmp/ice.key"
   }
 
   provisioner "remote-exec" {

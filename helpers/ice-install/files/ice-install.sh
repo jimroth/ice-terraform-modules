@@ -39,8 +39,13 @@ if [ -f /tmp/nginx.conf ]; then
     mv /tmp/nginx.conf nginx-ldap/assets
 fi
 # Move Nginx SSL credentials if present
-if [ -d /tmp/ssl ]; then
-    mv /tmp/ssl nginx-ldap/assets
+if [ -f /tmp/ice.key ]; then
+    mkdir -p nginx-ldap/assets/ssl
+    mv /tmp/ice.key nginx-ldap/assets/ssl/ice.key
+fi
+if [ -f /tmp/ice.crt ]; then
+    mkdir -p nginx-ldap/assets/ssl
+    mv /tmp/ice.crt nginx-ldap/assets/ssl/ice.crt
 fi
 
 # Set up ICE as an init.d service and start it.
