@@ -44,6 +44,10 @@ variable "dbr_bucket" {
   description = "Name of the S3 bucket where detailed billing reports are saved"
 }
 
+variable "cau_bucket" {
+  description = "Name of the S3 bucket where cost and usage reports are saved"
+}
+
 variable "work_bucket" {
   description = "Name of the S3 work bucket"
 }
@@ -55,4 +59,9 @@ variable "account" {
 variable "tags" {
   description = "A map of tags to add to all resources"
   default     = {}
+}
+
+variable "wake_on_cau" {
+  description = "Set S3 event notification to wake processor on the cost and usage report bucket instead of DBR bucket"
+  default = false
 }

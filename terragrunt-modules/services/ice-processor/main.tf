@@ -32,9 +32,8 @@ data "template_file" "ice_properties" {
   vars {
     reader                 = "false"
     processor              = "true"
-    billing_s3bucketname   = "${var.dbr_bucket}"
-    billing_s3bucketprefix = "${var.dbr_bucket_prefix}"
     work_s3bucketname      = "${data.terraform_remote_state.ice_bucket.bucket}"
+    work_s3bucketregion    = "${var.region}"
     work_s3bucketprefix    = "${var.work_bucket_prefix}"
   }
 }
@@ -53,8 +52,10 @@ module "ice-processor" {
   docker_compose_file = "${var.docker_compose_file}"
   dbr_s3_region       = "${var.dbr_s3_region}"
   dbr_bucket          = "${var.dbr_bucket}"
+  cau_bucket          = "${var.cau_bucket}"
   work_bucket         = "${data.terraform_remote_state.ice_bucket.bucket}"
   account             = "${var.account}"
+  wake_on_cau         = "${var.wake_on_cau}"
 
   tags {
     Environment = "${var.env_tag}"

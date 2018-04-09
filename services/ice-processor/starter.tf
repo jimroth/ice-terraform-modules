@@ -101,10 +101,23 @@ resource "aws_lambda_function" "start_ice_processor_lambda" {
 resource "aws_s3_bucket_notification" "dbr_bucket_notification" {
   provider = "aws.dbr_region"
   bucket   = "${var.dbr_bucket}"
+  count = "${var.wake_on_cau ? 0 : 1}"
 
   lambda_function {
     lambda_function_arn = "${aws_lambda_alias.start_ice_processor_func_alias.arn}"
     events              = ["s3:ObjectCreated:*"]
     filter_suffix       = ".zip"
+  }
+}
+
+resource "aws_s3_bucket_notification" "cau_bucket_notification" {
+  provider = "aws.dbr_region"
+  bucket   = "${var.cau_bucket}"
+  count = "${var.wake_on_cau ? 1 : 0}"
+
+  lambda_function {
+    lambda_function_arn = "${aws_lambda_alias.start_ice_processor_func_alias.arn}"
+    events              = ["s3:ObjectCreated:*"]
+    filter_suffix       = "Manifest.json"
   }
 }

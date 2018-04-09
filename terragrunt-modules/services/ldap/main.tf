@@ -47,8 +47,5 @@ module "ldap" {
   ldap_user     = "${var.ldap_user}"
   ldap_password = "${var.ldap_password}"
 
-  tags {
-    Environment = "${var.env_tag}"
-    Application = "Ice"
-  }
+  tags = "${merge(var.tags, map("Environment", "${var.env_tag}", "Application", "Ice"))}"
 }

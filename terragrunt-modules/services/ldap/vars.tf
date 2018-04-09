@@ -19,3 +19,9 @@ variable "ldap_user" {
 }
 
 variable "ldap_password" {}
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  default     = {}
+}
+

@@ -55,6 +55,7 @@ data "template_file" "ice_properties" {
     billing_s3bucketname   = ""
     billing_s3bucketprefix = ""
     work_s3bucketname      = "${data.terraform_remote_state.ice_bucket.bucket}"
+    work_s3bucketregion    = "${var.region}"
     work_s3bucketprefix    = "${var.work_bucket_prefix}"
   }
 }

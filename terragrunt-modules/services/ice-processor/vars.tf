@@ -23,11 +23,8 @@ variable "docker_compose_file" {
 }
 
 variable "dbr_s3_region" {}
+variable "cau_bucket" {}
 variable "dbr_bucket" {}
-
-variable "dbr_bucket_prefix" {
-  default = ""
-}
 
 variable "work_bucket_prefix" {
   default = ""
@@ -37,4 +34,8 @@ variable "account" {}
 
 variable "ice_properties_file" {
   default = "../../config/ice.properties"
+}
+
+variable "wake_on_cau" {
+  default = false
 }

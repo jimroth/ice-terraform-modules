@@ -9,3 +9,8 @@ variable "cidrs" {
 }
 
 variable "key_name" {}
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  default     = {}
+}

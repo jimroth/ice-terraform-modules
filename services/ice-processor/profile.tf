@@ -55,6 +55,35 @@ resource "aws_iam_role_policy" "dbr_read_access_policy" {
 EOF
 }
 
+resource "aws_iam_role_policy" "cau_read_access_policy" {
+  name = "cau-read-access-policy"
+  role = "${aws_iam_role.ice_processor_role.id}"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": "arn:aws:s3:::${var.cau_bucket}"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:GetObjectAcl"
+            ],
+            "Resource": "arn:aws:s3:::${var.cau_bucket}/*"
+        }
+    ]
+}
+EOF
+}
+
 resource "aws_iam_role_policy" "assume_ice_role_policy" {
   name = "assume-ice-role-policy"
   role = "${aws_iam_role.ice_processor_role.id}"
