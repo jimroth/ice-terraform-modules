@@ -49,6 +49,29 @@ resource "aws_iam_role_policy" "cloudwatch_metrics_push_policy" {
 EOF
 }
 
+#
+# Allow all Describe* calls
+#
+resource "aws_iam_role_policy" "ec2_policy" {
+  name = "ec2-policy"
+  role = "${aws_iam_role.ice_processor_role.id}"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:Describe*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
+
 resource "aws_iam_role" "ice_reader_role" {
   name = "${var.service_name}-role"
 
