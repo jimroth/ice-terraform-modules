@@ -34,18 +34,26 @@ grep -v Key docker-compose-template.yml > docker-compose.yml
 mv /tmp/docker-compose.yml .
 mv /tmp/ice.properties ice/assets
 
-# Move Nginx config file if present
-if [ -f /tmp/nginx.conf ]; then
-    mv /tmp/nginx.conf nginx-ldap/assets
-fi
-# Move Nginx SSL credentials if present
-if [ -f /tmp/ice.key ]; then
-    mkdir -p nginx-ldap/assets/ssl
-    mv /tmp/ice.key nginx-ldap/assets/ssl/ice.key
-fi
-if [ -f /tmp/ice.crt ]; then
-    mkdir -p nginx-ldap/assets/ssl
-    mv /tmp/ice.crt nginx-ldap/assets/ssl/ice.crt
+# Move Vouch config if present
+if [ -f /tmp/config.yml ]; then
+    mkdir -p vouch/assets/config
+    mkdir -p vouch/assets/data
+    mv /tmp/config.yml vouch/assets/config
+    mv /tmp/default.conf nginx-vouch/assets
+else
+    # Move Nginx config file if present
+    if [ -f /tmp/nginx.conf ]; then
+        mv /tmp/nginx.conf nginx-ldap/assets
+    fi
+    # Move Nginx SSL credentials if present
+    if [ -f /tmp/ice.key ]; then
+        mkdir -p nginx-ldap/assets/ssl
+        mv /tmp/ice.key nginx-ldap/assets/ssl/ice.key
+    fi
+    if [ -f /tmp/ice.crt ]; then
+        mkdir -p nginx-ldap/assets/ssl
+        mv /tmp/ice.crt nginx-ldap/assets/ssl/ice.crt
+    fi
 fi
 
 # Set up ICE as an init.d service and start it.

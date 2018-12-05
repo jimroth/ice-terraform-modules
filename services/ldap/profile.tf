@@ -62,6 +62,6 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "ldap_profile" {
-  name  = "${var.service_name}-profile"
+  name = "${var.service_name}-profile"
   role = "${aws_iam_role.ldap_role.name}"
 }

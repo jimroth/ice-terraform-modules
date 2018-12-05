@@ -38,9 +38,9 @@ resource "aws_security_group_rule" "outbound_https_rule" {
 # Cloudwatch Log Group
 #
 resource "aws_cloudwatch_log_group" "dbr_splitter_log_group" {
-    name = "/opt/splitbill/splitbill.log"
-    retention_in_days = "30"
-    tags = "${var.tags}"
+  name              = "/opt/splitbill/splitbill.log"
+  retention_in_days = "30"
+  tags              = "${var.tags}"
 }
 
 module "ami" {
@@ -97,7 +97,7 @@ resource "aws_instance" "dbr_splitter" {
   }
 
   provisioner "file" {
-    content      = "${data.template_file.install.rendered}"
+    content     = "${data.template_file.install.rendered}"
     destination = "/tmp/install.sh"
   }
 

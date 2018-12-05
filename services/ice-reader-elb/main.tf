@@ -21,7 +21,17 @@ resource "aws_security_group_rule" "inbound_http_rule" {
   from_port   = 80
   to_port     = 80
   protocol    = "tcp"
-  cidr_blocks = "${var.http_cidrs}"
+  cidr_blocks = ["${var.http_cidrs}", "${var.elb_subnet_cidr}"]
+}
+
+resource "aws_security_group_rule" "inbound_http_health_check_rule" {
+  type              = "ingress"
+  security_group_id = "${aws_security_group.ice_reader_sg.id}"
+
+  from_port   = 8000
+  to_port     = 8000
+  protocol    = "tcp"
+  cidr_blocks = ["${var.elb_subnet_cidr}"]
 }
 
 resource "aws_security_group_rule" "inbound_https_rule" {
@@ -44,6 +54,16 @@ resource "aws_security_group_rule" "outbound_http_rule" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "outbound_http_health_check_rule" {
+  type              = "egress"
+  security_group_id = "${aws_security_group.ice_reader_sg.id}"
+
+  from_port   = 8000
+  to_port     = 8000
+  protocol    = "tcp"
+  cidr_blocks = ["${var.elb_subnet_cidr}"]
+}
+
 resource "aws_security_group_rule" "outbound_https_rule" {
   type              = "egress"
   security_group_id = "${aws_security_group.ice_reader_sg.id}"
@@ -52,29 +72,6 @@ resource "aws_security_group_rule" "outbound_https_rule" {
   to_port     = 443
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-}
-
-resource "aws_security_group_rule" "outbound_ldap_rule" {
-  type              = "egress"
-  security_group_id = "${aws_security_group.ice_reader_sg.id}"
-
-  from_port                = "${var.ldap_port}"
-  to_port                  = "${var.ldap_port}"
-  protocol                 = "tcp"
-  source_security_group_id = "${var.ldap_security_group}"
-}
-
-#
-# add an ingress rule to the LDAP service security security_group
-#
-resource "aws_security_group_rule" "inbound_ldap_rule" {
-  type              = "ingress"
-  security_group_id = "${var.ldap_security_group}"
-
-  from_port                = "${var.ldap_port}"
-  to_port                  = "${var.ldap_port}"
-  protocol                 = "tcp"
-  source_security_group_id = "${aws_security_group.ice_reader_sg.id}"
 }
 
 module "ami" {
@@ -89,14 +86,47 @@ module "ice-install" {
   source = "../../helpers/ice-install"
 }
 
-data "template_file" "nginx_conf" {
-  template = "${file("${path.module}/nginx.conf")}"
+resource "aws_elb" "ice_reader_elb" {
+  name            = "${var.service_name}-elb"
+  subnets         = "${var.elb_subnets}"
+  security_groups = ["${aws_security_group.ice_reader_sg.id}"]
+
+  listener {
+    instance_port     = 80
+    instance_protocol = "http"
+    lb_port           = 80
+    lb_protocol       = "http"
+  }
+
+  listener {
+    instance_port      = 80
+    instance_protocol  = "http"
+    lb_port            = 443
+    lb_protocol        = "https"
+    ssl_certificate_id = "${var.ssl_certificate_id}"
+  }
+
+  health_check {
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    timeout             = 3
+    target              = "${var.health_check}"
+    interval            = 30
+  }
+
+  instances                   = ["${aws_instance.ice_reader.id}"]
+  cross_zone_load_balancing   = false
+  connection_draining         = true
+  connection_draining_timeout = 60
+  idle_timeout                = 60
+  tags                        = "${merge(var.tags, map("Name", format("%s-%s", var.service_name, "elb")))}"
+}
+
+data "template_file" "default_conf" {
+  template = "${file("${path.module}/default.conf")}"
 
   vars {
-    ldap_host     = "${var.ldap_host}"
-    ldap_port     = "${var.ldap_port}"
-    ldap_user     = "${var.ldap_user}"
-    ldap_password = "${var.ldap_password}"
+    hostname = "${var.hostname}"
   }
 }
 
@@ -140,18 +170,13 @@ resource "aws_instance" "ice_reader" {
   }
 
   provisioner "file" {
-    content     = "${data.template_file.nginx_conf.rendered}"
-    destination = "/tmp/nginx.conf"
+    content     = "${data.template_file.default_conf.rendered}"
+    destination = "/tmp/default.conf"
   }
 
   provisioner "file" {
-    source      = "${var.ssl_creds_dir}/ice.crt"
-    destination = "/tmp/ice.crt"
-  }
-
-  provisioner "file" {
-    source      = "${var.ssl_creds_dir}/ice.key"
-    destination = "/tmp/ice.key"
+    content     = "${var.vouch_config}"
+    destination = "/tmp/config.yml"
   }
 
   provisioner "remote-exec" {

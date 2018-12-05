@@ -167,6 +167,6 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "dbr_splitter_profile" {
-  name  = "${var.service_name}-profile"
+  name = "${var.service_name}-profile"
   role = "${aws_iam_role.dbr_splitter_role.name}"
 }

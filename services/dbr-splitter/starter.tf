@@ -92,9 +92,9 @@ resource "aws_cloudwatch_event_rule" "start_dbr_splitter" {
 }
 
 resource "aws_lambda_permission" "allow_cloudwatch" {
-  statement_id   = "AllowExecutionFromCloudwatch"
-  action         = "lambda:InvokeFunction"
-  function_name  = "${aws_lambda_function.start_dbr_splitter_lambda.arn}"
-  principal      = "events.amazonaws.com"
-  source_arn     = "${aws_cloudwatch_event_rule.start_dbr_splitter.arn}"
+  statement_id  = "AllowExecutionFromCloudwatch"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.start_dbr_splitter_lambda.arn}"
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.start_dbr_splitter.arn}"
 }

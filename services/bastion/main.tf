@@ -35,7 +35,7 @@ module "ami" {
 }
 
 resource "aws_instance" "bastion" {
-  ami                         = "${module.ami.id}"
+  ami                         = "${var.ami != "" ? var.ami : module.ami.id}"
   instance_type               = "${var.instance_type}"
   key_name                    = "${var.key_name}"
   vpc_security_group_ids      = ["${aws_security_group.bastion_sg.id}"]

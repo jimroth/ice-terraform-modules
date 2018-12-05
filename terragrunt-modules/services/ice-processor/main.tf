@@ -30,11 +30,11 @@ data "template_file" "ice_properties" {
   template = "${file("${var.ice_properties_file}")}"
 
   vars {
-    reader                 = "false"
-    processor              = "true"
-    work_s3bucketname      = "${data.terraform_remote_state.ice_bucket.bucket}"
-    work_s3bucketregion    = "${var.region}"
-    work_s3bucketprefix    = "${var.work_bucket_prefix}"
+    reader              = "false"
+    processor           = "true"
+    work_s3bucketname   = "${data.terraform_remote_state.ice_bucket.bucket}"
+    work_s3bucketregion = "${var.region}"
+    work_s3bucketprefix = "${var.work_bucket_prefix}"
   }
 }
 

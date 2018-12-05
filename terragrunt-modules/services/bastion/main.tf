@@ -25,6 +25,6 @@ module "bastion" {
   vpc_id        = "${data.terraform_remote_state.vpc.vpc_id}"
   subnet_id     = "${data.terraform_remote_state.vpc.public_subnet}"
   service_name  = "bastion-${var.env}"
-
-  tags = "${merge(var.tags, map("Environment", "${var.env_tag}", "Application", "Ice"))}"
+  ami           = "${var.ami}"
+  tags          = "${merge(var.tags, map("Application", "Ice"))}"
 }

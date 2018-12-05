@@ -28,3 +28,8 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   default     = {}
 }
+
+variable "ami" {
+  description = "Optional ami to use for the ec2 instance"
+  default     = ""
+}

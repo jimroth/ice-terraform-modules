@@ -63,5 +63,5 @@ variable "tags" {
 
 variable "wake_on_cau" {
   description = "Set S3 event notification to wake processor on the cost and usage report bucket instead of DBR bucket"
-  default = false
+  default     = false
 }

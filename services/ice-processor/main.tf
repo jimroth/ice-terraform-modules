@@ -1,5 +1,5 @@
 resource "aws_security_group" "ice_processor_sg" {
-  name = "${var.service_name}-sg"
+  name   = "${var.service_name}-sg"
   vpc_id = "${var.vpc_id}"
   tags   = "${merge(var.tags, map("Name", format("%s-sg", var.service_name)))}"
 }

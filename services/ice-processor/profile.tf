@@ -171,6 +171,6 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "ice_processor_profile" {
-  name  = "${var.service_name}-profile"
+  name = "${var.service_name}-profile"
   role = "${aws_iam_role.ice_processor_role.name}"
 }
