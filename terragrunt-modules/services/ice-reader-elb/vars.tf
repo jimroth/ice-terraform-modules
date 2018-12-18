@@ -12,10 +12,6 @@ variable "bucket_env" {
 variable "tf_state_bucket" {}
 variable "tf_state_region" {}
 
-variable "ice_properties_file" {
-  default = "../../config/ice.properties"
-}
-
 variable "ssh_cidrs" {
   type = "list"
 }
@@ -37,12 +33,6 @@ variable "key_name" {}
 variable "instance_type" {
   default = "t2.small"
 }
-
-variable "work_bucket_prefix" {
-  default = ""
-}
-
-variable "docker_compose_file" {}
 
 variable "tags" {
   description = "A map of tags to add to all resources"

@@ -130,28 +130,18 @@ resource "aws_instance" "ice_reader" {
   }
 
   provisioner "file" {
-    source      = "${var.docker_compose_file}"
-    destination = "/tmp/docker-compose.yml"
-  }
-
-  provisioner "file" {
-    content     = "${var.ice_properties}"
-    destination = "/tmp/ice.properties"
-  }
-
-  provisioner "file" {
     content     = "${data.template_file.nginx_conf.rendered}"
     destination = "/tmp/nginx.conf"
   }
 
-  provisioner "file" {
-    source      = "${var.ssl_creds_dir}/ice.crt"
-    destination = "/tmp/ice.crt"
+  provisioner "local-exec" {
+    # Zip up the config and asset files
+    command = "zip -r docker-ice.zip docker-ice"
   }
 
   provisioner "file" {
-    source      = "${var.ssl_creds_dir}/ice.key"
-    destination = "/tmp/ice.key"
+    source      = "docker-ice.zip"
+    destination = "/tmp/docker-ice.zip"
   }
 
   provisioner "remote-exec" {

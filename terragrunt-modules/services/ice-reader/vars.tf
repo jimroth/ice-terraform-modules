@@ -39,11 +39,3 @@ variable "ldap_user" {
 }
 
 variable "ldap_password" {}
-
-variable "work_bucket_prefix" {
-  default = ""
-}
-
-variable "docker_compose_file" {
-  default = "docker-compose-ec2-reader.yml"
-}

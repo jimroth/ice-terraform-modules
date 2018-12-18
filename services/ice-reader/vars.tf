@@ -33,14 +33,6 @@ variable "subnet_id" {
   description = "VPC subnet for the ice-reader"
 }
 
-variable "ice_properties" {
-  description = "Properties file content for ICE configuration"
-}
-
-variable "docker_compose_file" {
-  description = "Docker compose YML file for deploying ICE"
-}
-
 variable "ssl_creds_dir" {
   description = "Path to folder containing SSL certificate and key files. Files must be named ice.crt and ice.key"
 }

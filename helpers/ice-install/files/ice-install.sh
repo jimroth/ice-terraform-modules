@@ -26,13 +26,9 @@ cd docker-ice
 git init
 git pull https://github.com/jimroth/docker-ice.git
 
-# Configure docker-ice
-# Remove key parameters (we're using roles)
-grep -v Key docker-compose-template.yml > docker-compose.yml
-
-# Move the configuration files provisioned to /tmp
-mv /tmp/docker-compose.yml .
-mv /tmp/ice.properties ice/assets
+cd ..
+unzip /tmp/docker-ice.zip
+cd docker-ice
 
 # Move Vouch config if present
 if [ -f /tmp/config.yml ]; then
@@ -44,15 +40,6 @@ else
     # Move Nginx config file if present
     if [ -f /tmp/nginx.conf ]; then
         mv /tmp/nginx.conf nginx-ldap/assets
-    fi
-    # Move Nginx SSL credentials if present
-    if [ -f /tmp/ice.key ]; then
-        mkdir -p nginx-ldap/assets/ssl
-        mv /tmp/ice.key nginx-ldap/assets/ssl/ice.key
-    fi
-    if [ -f /tmp/ice.crt ]; then
-        mkdir -p nginx-ldap/assets/ssl
-        mv /tmp/ice.crt nginx-ldap/assets/ssl/ice.crt
     fi
 fi
 

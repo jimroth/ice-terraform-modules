@@ -37,14 +37,6 @@ variable "subnet_id" {
   description = "VPC subnet for the ice-reader"
 }
 
-variable "ice_properties" {
-  description = "Properties file content for ICE configuration"
-}
-
-variable "docker_compose_file" {
-  description = "Docker compose YML file for deploying ICE"
-}
-
 variable "work_bucket" {
   description = "Name of the S3 work bucket"
 }

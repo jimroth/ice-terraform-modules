@@ -160,16 +160,6 @@ resource "aws_instance" "ice_reader" {
   }
 
   provisioner "file" {
-    source      = "${var.docker_compose_file}"
-    destination = "/tmp/docker-compose.yml"
-  }
-
-  provisioner "file" {
-    content     = "${var.ice_properties}"
-    destination = "/tmp/ice.properties"
-  }
-
-  provisioner "file" {
     content     = "${data.template_file.default_conf.rendered}"
     destination = "/tmp/default.conf"
   }
@@ -177,6 +167,16 @@ resource "aws_instance" "ice_reader" {
   provisioner "file" {
     content     = "${var.vouch_config}"
     destination = "/tmp/config.yml"
+  }
+
+  provisioner "local-exec" {
+    # Zip up the config and asset files
+    command = "zip -r docker-ice.zip docker-ice"
+  }
+
+  provisioner "file" {
+    source      = "docker-ice.zip"
+    destination = "/tmp/docker-ice.zip"
   }
 
   provisioner "remote-exec" {

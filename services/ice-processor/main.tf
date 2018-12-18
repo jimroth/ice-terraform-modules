@@ -75,14 +75,14 @@ resource "aws_instance" "ice_processor" {
     destination = "/tmp"
   }
 
-  provisioner "file" {
-    source      = "${var.docker_compose_file}"
-    destination = "/tmp/docker-compose.yml"
+  provisioner "local-exec" {
+    # Zip up the config and asset files
+    command = "zip -r docker-ice.zip docker-ice"
   }
 
   provisioner "file" {
-    content     = "${var.ice_properties}"
-    destination = "/tmp/ice.properties"
+    source      = "docker-ice.zip"
+    destination = "/tmp/docker-ice.zip"
   }
 
   provisioner "remote-exec" {

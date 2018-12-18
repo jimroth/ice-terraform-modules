@@ -45,6 +45,6 @@ terragrunt = {
 # YOUR CIDRs FOR SSH ACCESS 
 cidrs               = []
 key_name            = "YOUR_KEY_PAIR_NAME"
-dbr_s3_region       = "YOUR_DETAILED_BILLING_REPORT_BUCKET_REGION"
-dbr_bucket          = "YOUR_DETAILED_BILLING_REPORT_BUCKET"
+cau_s3_region       = "YOUR_COST_AND_USAGE_REPORT_BUCKET_REGION"
+cau_bucket          = "YOUR_COST_AND_USAGE_REPORT_BUCKET"
 account             = "YOUR_AWS_ACCOUNT_NUMBER"

@@ -28,24 +28,16 @@ variable "subnet_id" {
   description = "VPC subnet for the ice-processor"
 }
 
-variable "ice_properties" {
-  description = "Properties file content for ICE configuration"
-}
-
-variable "docker_compose_file" {
-  description = "Docker compose YML file for deploying ICE"
-}
-
-variable "dbr_s3_region" {
-  description = "Region where the S3 bucket for billing files lives"
-}
-
 variable "dbr_bucket" {
   description = "Name of the S3 bucket where detailed billing reports are saved"
 }
 
 variable "cau_bucket" {
   description = "Name of the S3 bucket where cost and usage reports are saved"
+}
+
+variable "cau_s3_region" {
+  description = "Region hosting the cost and usage report s3 bucket"
 }
 
 variable "work_bucket" {
@@ -62,6 +54,11 @@ variable "tags" {
 }
 
 variable "wake_on_cau" {
-  description = "Set S3 event notification to wake processor on the cost and usage report bucket instead of DBR bucket"
+  description = "Set S3 event notification to wake processor on the cost and usage report bucket"
   default     = false
+}
+
+variable "wake_on_sns" {
+  description = "SNS Subscription ARN for waking the processor"
+  default     = ""
 }
