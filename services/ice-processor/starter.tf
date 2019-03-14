@@ -13,9 +13,7 @@ resource "aws_lambda_permission" "allow_s3" {
   action         = "lambda:InvokeFunction"
   function_name  = "${aws_lambda_function.start_ice_processor_lambda.arn}"
   principal      = "s3.amazonaws.com"
-  source_account = "${var.account}"
   source_arn     = "arn:aws:s3:::${var.cau_bucket}"
-  qualifier      = "${aws_lambda_alias.start_ice_processor_func_alias.name}"
 }
 
 resource "aws_lambda_permission" "allow_sns" {
@@ -23,19 +21,9 @@ resource "aws_lambda_permission" "allow_sns" {
   provider       = "aws.dbr_region"
   statement_id   = "AllowExecutionFromSNS"
   action         = "lambda:InvokeFunction"
-  function_name  = "${aws_lambda_function.start_ice_processor_lambda.arn}"
+  function_name  = "${aws_lambda_function.start_ice_processor_lambda.function_name}"
   principal      = "sns.amazonaws.com"
-  source_account = "${var.account}"
   source_arn     = "${var.wake_on_sns}"
-  qualifier      = "${aws_lambda_alias.start_ice_processor_func_alias.name}"
-}
-
-resource "aws_lambda_alias" "start_ice_processor_func_alias" {
-  provider         = "aws.dbr_region"
-  name             = "startIceProcessorFuncLatest"
-  description      = "latest version of function to start the ice processor instance"
-  function_name    = "${aws_lambda_function.start_ice_processor_lambda.arn}"
-  function_version = "$LATEST"
 }
 
 resource "aws_iam_role_policy" "instance_start_policy" {
@@ -117,7 +105,7 @@ resource "aws_s3_bucket_notification" "cau_bucket_notification" {
   count    = "${var.wake_on_cau ? 1 : 0}"
 
   lambda_function {
-    lambda_function_arn = "${aws_lambda_alias.start_ice_processor_func_alias.arn}"
+    lambda_function_arn = "${aws_lambda_function.start_ice_processor_lambda.arn}"
     events              = ["s3:ObjectCreated:*"]
     filter_suffix       = "Manifest.json"
   }
@@ -128,5 +116,5 @@ resource "aws_sns_topic_subscription" "subscription" {
   provider  = "aws.dbr_region"
   topic_arn = "${var.wake_on_sns}"
   protocol  = "lambda"
-  endpoint  = "${aws_lambda_alias.start_ice_processor_func_alias.arn}"
+  endpoint  = "${aws_lambda_function.start_ice_processor_lambda.arn}"
 }

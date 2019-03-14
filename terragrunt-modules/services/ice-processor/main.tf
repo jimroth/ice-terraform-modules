@@ -7,7 +7,7 @@ data "terraform_remote_state" "vpc" {
 
   config {
     bucket = "${var.tf_state_bucket}"
-    key    = "${var.env}/vpc/terraform.tfstate"
+    key    = "${var.vpc_env}/vpc/terraform.tfstate"
     region = "${var.tf_state_region}"
   }
 }
@@ -21,7 +21,7 @@ data "terraform_remote_state" "ice_bucket" {
 
   config {
     bucket = "${var.tf_state_bucket}"
-    key    = "${var.env}/data-storage/ice-bucket/terraform.tfstate"
+    key    = "${var.bucket_env}/data-storage/ice-bucket/terraform.tfstate"
     region = "${var.tf_state_region}"
   }
 }
@@ -42,5 +42,6 @@ module "ice-processor" {
   work_bucket   = "${data.terraform_remote_state.ice_bucket.bucket}"
   account       = "${var.account}"
   wake_on_cau   = "${var.wake_on_cau}"
+  wake_on_sns   = "${var.wake_on_sns}"
   tags          = "${var.tags}"
 }

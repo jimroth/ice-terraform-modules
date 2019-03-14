@@ -1,5 +1,14 @@
 variable "region" {}
 variable "env" {}
+
+variable "vpc_env" {
+  description = "environment holding the VPC backend state"
+}
+
+variable "bucket_env" {
+  description = "environment holding the Work bucket backend state"
+}
+
 variable "tf_state_bucket" {}
 variable "tf_state_region" {}
 

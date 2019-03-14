@@ -151,6 +151,30 @@ resource "aws_iam_role_policy" "ec2_policy" {
 EOF
 }
 
+#
+# Allow all Describe* calls
+#
+resource "aws_iam_role_policy" "organizations_policy" {
+  name = "organizations-policy"
+  role = "${aws_iam_role.ice_processor_role.id}"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "organizations:Describe*",
+                "organizations:List*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
+
 resource "aws_iam_role" "ice_processor_role" {
   name = "${var.service_name}-role"
 
