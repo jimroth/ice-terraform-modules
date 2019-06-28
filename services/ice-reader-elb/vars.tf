@@ -66,3 +66,8 @@ variable "hostname" {
 variable "health_check" {
   description = "Health check target for the ELB"
 }
+
+variable "ebs_volume_size" {
+  description = "Size in GB of root EBS volume"
+  default     = "30"
+}

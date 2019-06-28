@@ -52,6 +52,7 @@ module "ice-reader-elb" {
   key_name           = "${var.key_name}"
   key_path           = "${var.key_path}"
   instance_type      = "${var.instance_type}"
+  ebs_volume_size    = "${var.ebs_volume_size}"
   vpc_id             = "${data.terraform_remote_state.vpc.vpc_id}"
   subnet_id          = "${data.terraform_remote_state.vpc.public_subnet}"
   service_name       = "ice-reader-${var.env}"

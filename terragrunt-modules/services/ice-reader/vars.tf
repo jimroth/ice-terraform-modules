@@ -39,3 +39,7 @@ variable "ldap_user" {
 }
 
 variable "ldap_password" {}
+
+variable "ebs_volume_size" {
+  description = "Size in GB of root EBS volume"
+}

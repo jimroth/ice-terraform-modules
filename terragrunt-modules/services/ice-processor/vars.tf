@@ -45,3 +45,7 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   default     = {}
 }
+
+variable "ebs_volume_size" {
+  description = "Size in GB of root EBS volume"
+}

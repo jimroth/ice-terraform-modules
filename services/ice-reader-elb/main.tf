@@ -188,7 +188,7 @@ resource "aws_instance" "ice_reader" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "30"
+    volume_size = "${var.ebs_volume_size}"
   }
 
   tags = "${merge(var.tags, map("Name", format("%s", var.service_name)))}"

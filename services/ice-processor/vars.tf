@@ -62,3 +62,8 @@ variable "wake_on_sns" {
   description = "SNS Subscription ARN for waking the processor"
   default     = ""
 }
+
+variable "ebs_volume_size" {
+  description = "Size in GB of root EBS volume"
+  default     = "30"
+}
