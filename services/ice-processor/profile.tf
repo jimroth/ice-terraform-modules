@@ -97,7 +97,10 @@ resource "aws_iam_role_policy" "assume_ice_role_policy" {
             "Action": [
                 "sts:AssumeRole"
             ],
-            "Resource": "arn:aws:iam::*:role/ice"
+            "Resource": [
+                "arn:aws:iam::*:role/ice",
+                "arn:aws:iam::*:role/IceRole"
+            ]
         }
     ]
 }
@@ -168,6 +171,27 @@ resource "aws_iam_role_policy" "organizations_policy" {
                 "organizations:Describe*",
                 "organizations:List*"
             ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+}
+
+#
+# Allow all calls - it's a read-only service
+#
+resource "aws_iam_role_policy" "pricing_policy" {
+  name = "pricing-policy"
+  role = "${aws_iam_role.ice_processor_role.id}"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "pricing:*",
             "Resource": "*"
         }
     ]
