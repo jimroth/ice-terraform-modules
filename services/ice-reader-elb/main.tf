@@ -118,7 +118,7 @@ resource "aws_elb" "ice_reader_elb" {
   cross_zone_load_balancing   = false
   connection_draining         = true
   connection_draining_timeout = 60
-  idle_timeout                = 60
+  idle_timeout                = 600
   tags                        = "${merge(var.tags, map("Name", format("%s-%s", var.service_name, "elb")))}"
 }
 
