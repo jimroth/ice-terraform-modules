@@ -3,32 +3,32 @@
 
 provider "aws" {
   alias  = "dbr_region"
-  region = "${var.cau_s3_region}"
+  region = var.cau_s3_region
 }
 
 resource "aws_lambda_permission" "allow_s3" {
-  count          = "${var.wake_on_cau ? 1 : 0}"
-  provider       = "aws.dbr_region"
+  count          = var.wake_on_cau ? 1 : 0
+  provider       = aws.dbr_region
   statement_id   = "AllowExecutionFromS3"
   action         = "lambda:InvokeFunction"
-  function_name  = "${aws_lambda_function.start_ice_processor_lambda.arn}"
+  function_name  = aws_lambda_function.start_ice_processor_lambda.arn
   principal      = "s3.amazonaws.com"
   source_arn     = "arn:aws:s3:::${var.cau_bucket}"
 }
 
 resource "aws_lambda_permission" "allow_sns" {
-  count          = "${var.wake_on_sns != "" ? 1 : 0}"
-  provider       = "aws.dbr_region"
+  count          = var.wake_on_sns != "" ? 1 : 0
+  provider       = aws.dbr_region
   statement_id   = "AllowExecutionFromSNS"
   action         = "lambda:InvokeFunction"
-  function_name  = "${aws_lambda_function.start_ice_processor_lambda.function_name}"
+  function_name  = aws_lambda_function.start_ice_processor_lambda.function_name
   principal      = "sns.amazonaws.com"
-  source_arn     = "${var.wake_on_sns}"
+  source_arn     = var.wake_on_sns
 }
 
 resource "aws_iam_role_policy" "instance_start_policy" {
   name = "instance-start-policy"
-  role = "${aws_iam_role.start_ice_processor_role.id}"
+  role = aws_iam_role.start_ice_processor_role.id
 
   policy = <<EOF
 {
@@ -82,39 +82,39 @@ data "archive_file" "start_ice_lambda_code" {
 }
 
 resource "aws_lambda_function" "start_ice_processor_lambda" {
-  provider         = "aws.dbr_region"
-  filename         = "${data.archive_file.start_ice_lambda_code.output_path}"
+  provider         = aws.dbr_region
+  filename         = data.archive_file.start_ice_lambda_code.output_path
   function_name    = "${var.service_name}-start-instance"
-  role             = "${aws_iam_role.start_ice_processor_role.arn}"
+  role             = aws_iam_role.start_ice_processor_role.arn
   runtime          = "python2.7"
   handler          = "start-instance.lambda_handler"
-  source_code_hash = "${data.archive_file.start_ice_lambda_code.output_base64sha256}"
+  source_code_hash = data.archive_file.start_ice_lambda_code.output_base64sha256
   timeout          = "10"
 
   environment {
     variables = {
-      az = "${aws_instance.ice_processor.availability_zone}"
-      id = "${aws_instance.ice_processor.id}"
+      az = aws_instance.ice_processor.availability_zone
+      id = aws_instance.ice_processor.id
     }
   }
 }
 
 resource "aws_s3_bucket_notification" "cau_bucket_notification" {
-  provider = "aws.dbr_region"
-  bucket   = "${var.cau_bucket}"
-  count    = "${var.wake_on_cau ? 1 : 0}"
+  provider = aws.dbr_region
+  bucket   = var.cau_bucket
+  count    = var.wake_on_cau ? 1 : 0
 
   lambda_function {
-    lambda_function_arn = "${aws_lambda_function.start_ice_processor_lambda.arn}"
+    lambda_function_arn = aws_lambda_function.start_ice_processor_lambda.arn
     events              = ["s3:ObjectCreated:*"]
     filter_suffix       = "Manifest.json"
   }
 }
 
 resource "aws_sns_topic_subscription" "subscription" {
-  count     = "${var.wake_on_sns != "" ? 1 : 0}"
-  provider  = "aws.dbr_region"
-  topic_arn = "${var.wake_on_sns}"
+  count     = var.wake_on_sns != "" ? 1 : 0
+  provider  = aws.dbr_region
+  topic_arn = var.wake_on_sns
   protocol  = "lambda"
-  endpoint  = "${aws_lambda_function.start_ice_processor_lambda.arn}"
+  endpoint  = aws_lambda_function.start_ice_processor_lambda.arn
 }

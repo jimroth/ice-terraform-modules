@@ -1,6 +1,6 @@
 resource "aws_iam_role_policy" "ice_bucket_full_access_policy" {
   name = "ice-bucket-full-access-policy"
-  role = "${aws_iam_role.ice_reader_role.id}"
+  role = aws_iam_role.ice_reader_role.id
 
   policy = <<EOF
 {
@@ -28,7 +28,7 @@ EOF
 
 resource "aws_iam_role_policy" "cloudwatch_metrics_push_policy" {
   name = "cloudwatch-metrics-push-policy"
-  role = "${aws_iam_role.ice_reader_role.id}"
+  role = aws_iam_role.ice_reader_role.id
 
   policy = <<EOF
 {
@@ -54,7 +54,7 @@ EOF
 #
 resource "aws_iam_role_policy" "ec2_policy" {
   name = "ec2-policy"
-  role = "${aws_iam_role.ice_reader_role.id}"
+  role = aws_iam_role.ice_reader_role.id
 
   policy = <<EOF
 {
@@ -93,5 +93,5 @@ EOF
 
 resource "aws_iam_instance_profile" "ice_reader_profile" {
   name = "${var.service_name}-profile"
-  role = "${aws_iam_role.ice_reader_role.name}"
+  role = aws_iam_role.ice_reader_role.name
 }

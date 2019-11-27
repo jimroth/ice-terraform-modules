@@ -1,0 +1,24 @@
+
+# vouch config
+# bare minimum to get vouch running with google
+
+vouch:
+  logLevel: info
+  domains:
+  - company.com
+
+  # whiteList (optional) allows only the listed usernames
+  # usernames are usually email addresses (google, most oidc providers) or login/username for github and github enterprise
+  whiteList:
+  - your@company.com
+
+oauth:
+  provider: google
+  # get credentials from...
+  # https://console.developers.google.com/apis/credentials
+  client_id: ${client_id}
+  client_secret: ${client_secret}
+  callback_urls: 
+    - https://${hostname}/auth
+  preferredDomain: company.com
+  # endpoints set from https://godoc.org/golang.org/x/oauth2/google

@@ -13,11 +13,11 @@ variable "tf_state_bucket" {}
 variable "tf_state_region" {}
 
 variable "ssh_cidrs" {
-  type = "list"
+  type = list
 }
 
 variable "http_cidrs" {
-  type = "list"
+  type = list
 }
 
 variable "elb_subnet_cidr" {
@@ -36,6 +36,7 @@ variable "instance_type" {
 
 variable "tags" {
   description = "A map of tags to add to all resources"
+  type = map
   default     = {}
 }
 
@@ -45,7 +46,7 @@ variable "ssl_certificate_id" {
 
 variable "elb_subnets" {
   description = "Subnets for the ELB"
-  type        = "list"
+  type        = list
 }
 
 variable "vouch_config_file" {

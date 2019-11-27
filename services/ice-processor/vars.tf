@@ -9,7 +9,7 @@ variable "vpc_id" {
 
 variable "cidrs" {
   description = "List of CIDRs for SSH access to the ice-processor"
-  type        = "list"
+  type        = list
 }
 
 variable "key_name" {
@@ -50,6 +50,7 @@ variable "account" {
 
 variable "tags" {
   description = "A map of tags to add to all resources"
+  type = map
   default     = {}
 }
 

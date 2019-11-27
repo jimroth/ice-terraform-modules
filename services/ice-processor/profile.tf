@@ -1,6 +1,6 @@
 resource "aws_iam_role_policy" "ice_bucket_full_access_policy" {
   name = "ice-bucket-full-access-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
+  role = aws_iam_role.ice_processor_role.id
 
   policy = <<EOF
 {
@@ -28,7 +28,7 @@ EOF
 
 resource "aws_iam_role_policy" "dbr_read_access_policy" {
   name = "dbr-read-access-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
+  role = aws_iam_role.ice_processor_role.id
 
   policy = <<EOF
 {
@@ -57,7 +57,7 @@ EOF
 
 resource "aws_iam_role_policy" "cau_read_access_policy" {
   name = "cau-read-access-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
+  role = aws_iam_role.ice_processor_role.id
 
   policy = <<EOF
 {
@@ -86,7 +86,7 @@ EOF
 
 resource "aws_iam_role_policy" "assume_ice_role_policy" {
   name = "assume-ice-role-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
+  role = aws_iam_role.ice_processor_role.id
 
   policy = <<EOF
 {
@@ -109,7 +109,7 @@ EOF
 
 resource "aws_iam_role_policy" "cloudwatch_metrics_push_policy" {
   name = "cloudwatch-metrics-push-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
+  role = aws_iam_role.ice_processor_role.id
 
   policy = <<EOF
 {
@@ -135,7 +135,7 @@ EOF
 #
 resource "aws_iam_role_policy" "ec2_policy" {
   name = "ec2-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
+  role = aws_iam_role.ice_processor_role.id
 
   policy = <<EOF
 {
@@ -159,7 +159,7 @@ EOF
 #
 resource "aws_iam_role_policy" "organizations_policy" {
   name = "organizations-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
+  role = aws_iam_role.ice_processor_role.id
 
   policy = <<EOF
 {
@@ -183,7 +183,7 @@ EOF
 #
 resource "aws_iam_role_policy" "pricing_policy" {
   name = "pricing-policy"
-  role = "${aws_iam_role.ice_processor_role.id}"
+  role = aws_iam_role.ice_processor_role.id
 
   policy = <<EOF
 {
@@ -220,5 +220,5 @@ EOF
 
 resource "aws_iam_instance_profile" "ice_processor_profile" {
   name = "${var.service_name}-profile"
-  role = "${aws_iam_role.ice_processor_role.name}"
+  role = aws_iam_role.ice_processor_role.name
 }

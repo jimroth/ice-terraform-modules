@@ -1,5 +1,0 @@
-region = "us-east-1"
-env = "prod"
-env_tag = "Prod"
-tf_state_bucket = "YOUR_TERRAFORM_STATE_BUCKET"
-tf_state_region = "us-east-1"

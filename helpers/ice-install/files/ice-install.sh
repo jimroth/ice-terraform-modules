@@ -11,7 +11,8 @@ sudo yum install -y docker
 sudo service docker start
 sudo usermod -a -G docker ec2-user
 
-# Install Docker-Compose
+# Install Docker-Compose - requires gcc to install
+sudo yum install -y gcc
 sudo pip install docker-compose
 
 # Install Git so we can pull down stuff from GitHub

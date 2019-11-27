@@ -13,7 +13,7 @@ variable "tf_state_bucket" {}
 variable "tf_state_region" {}
 
 variable "cidrs" {
-  type = "list"
+  type = list
 }
 
 variable "key_path" {
@@ -43,6 +43,7 @@ variable "wake_on_sns" {
 
 variable "tags" {
   description = "A map of tags to add to all resources"
+  type = map
   default     = {}
 }
 

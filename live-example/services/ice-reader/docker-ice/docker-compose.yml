@@ -11,18 +11,28 @@ ice:
   log_opt:
     max-size: "10m"
     max-file: "3"
-nginx-ldap:
-  image: jimroth/nginx-ldap:latest
+nginx-vouch:
+  image: jimroth/nginx-vouch:latest
   command: nginx -g "daemon off;"
   volumes:
-    - ./nginx-ldap/assets/default.conf:/etc/nginx/conf.d/default.conf
-    - ./nginx-ldap/assets/nginx.conf:/etc/nginx/nginx.conf
-    - ./nginx-ldap/assets/ssl:/etc/ssl/ice
+    - ./nginx-vouch/assets/default.conf:/etc/nginx/conf.d/default.conf
+    - ./nginx-vouch/assets/nginx.conf:/etc/nginx/nginx.conf
+    - ./vouch/assets/static:/site/static
   ports:
     - "80:80"
-    - "443:443"
+    - "8000:8000"
   links:
     - ice:ice
+    - vouch:vouch
+  log_driver: "json-file"
+  log_opt:
+    max-size: "10m"
+    max-file: "3"
+vouch:
+  image: voucher/vouch-proxy:0.5.3
+  volumes:
+    - ./vouch/assets/config:/config
+    - ./vouch/assets/data:/data
   log_driver: "json-file"
   log_opt:
     max-size: "10m"

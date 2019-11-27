@@ -20,5 +20,6 @@ variable "private_subnet_cidr" {
 
 variable "tags" {
   description = "A map of tags to add to all resources"
+  type = map
   default     = {}
 }
