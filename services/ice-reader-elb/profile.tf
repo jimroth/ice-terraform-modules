@@ -50,7 +50,7 @@ EOF
 }
 
 #
-# Allow all Describe* calls
+# Allow all Describe* calls plus ability to start processor instance
 #
 resource "aws_iam_role_policy" "ec2_policy" {
   name = "ec2-policy"
@@ -63,7 +63,8 @@ resource "aws_iam_role_policy" "ec2_policy" {
         {
             "Effect": "Allow",
             "Action": [
-                "ec2:Describe*"
+                "ec2:Describe*",
+                "ec2:Start*"
             ],
             "Resource": "*"
         }
